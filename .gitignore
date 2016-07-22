@@ -1,0 +1,16 @@
+/.project
+/gateplugin-Tagger_GoogleNLP-*.zip
+/gateplugin-Tagger_GoogleNLP.jar
+/classes
+/lib
+/build.properties
+*~
+#*#
+*.class
+TEST-*.xml
+TEST-*.txt
+TESTS-TestSuites.xml
+junit-noframes.html
+hs_err_*.log
+
+

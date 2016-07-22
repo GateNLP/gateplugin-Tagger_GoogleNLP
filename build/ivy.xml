@@ -1,0 +1,20 @@
+<ivy-module version="2.0">
+
+  <info
+    organisation="uk.ac.gate"
+    module="gate-plugin-tagger-googlenlp"
+    revision="1.0-SNAPSHOT">
+    <description homepage="https://github.com/GateNLP/gateplugin-Tagger_GoogleNLP/" />
+  </info>
+
+  <configurations>
+    <conf name="default" />
+  </configurations>
+
+  <dependencies defaultconf="*->master(default),runtime(default)" >
+    <dependency org="com.google.apis" name="google-api-services-language" rev="v1beta1-rev1-1.22.0" />
+    <dependency org="com.google.api-client" name="google-api-client" rev="1.21.0"/>
+    <dependency org="junit" name="junit" rev="4.12" />
+  </dependencies>
+</ivy-module>
+

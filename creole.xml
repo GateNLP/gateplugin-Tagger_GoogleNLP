@@ -1,0 +1,10 @@
+<!-- creole.xml for Learning_Framework -->
+<CREOLE-DIRECTORY
+  ID="gate.TaggerGoogleNLP"
+  VERSION="1.0"
+  DESCRIPTION="Tagger GoogleNLP"
+  HELPURL="https://github.com/GateNLP/gateplugin-Tagger_GoogleNLP/wiki"
+>
+  <JAR scan="true">gateplugin-Tagger_GoogleNLP.jar</JAR>
+  <IVY>build/ivy.xml</IVY>
+</CREOLE-DIRECTORY>

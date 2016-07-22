@@ -1,0 +1,9 @@
+This plugin depends on the following software:
+
+  Google API Services Language: 
+  License: Apache License 2.0
+
+  Google API Client: 
+  License: Apache License 2.0
+
+TODO: add full list!!
