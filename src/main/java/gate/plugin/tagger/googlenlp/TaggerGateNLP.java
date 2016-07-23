@@ -1,7 +1,10 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright (c) The University of Sheffield.
+ *
+ *  This file is free software, licensed under the 
+ *  GNU Library General Public License, Version 2.1, June 1991.
+ *  See the file LICENSE.txt that comes with this software.
+ *
  */
 package gate.plugin.tagger.googlenlp;
 
@@ -27,6 +30,7 @@ import gate.Annotation;
 import gate.AnnotationSet;
 import gate.Controller;
 import gate.Document;
+import gate.Factory;
 import gate.FeatureMap;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
@@ -36,16 +40,18 @@ import gate.util.GateRuntimeException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Processing resource for using the Google NLP service.
+ * 
  * @author Johann Petrak
  */
 @CreoleResource(name = "Tagger_GoogleNLP",
         comment = "Annotate documents using a Google NLP web service",
         // icon="taggerIcon.gif",
-        helpURL = "https://github.com/SheffieldGATE/gateplugin-Tagger_TagMe/wiki/Tagger_TagMe"
+        helpURL = "https://github.com/GateNLP/gateplugin-Tagger_GoogleNLP/wiki/Tagger_GoogleNLP"
 )
 public class TaggerGateNLP extends AbstractDocumentProcessor {
 
@@ -153,6 +159,18 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
     return applicationName;
   }
   
+  protected String languageCode = "";
+  @CreoleParameter(comment = "Language code, leave empty for autodetect", defaultValue = "")
+  @RunTime
+  @Optional
+  public void setLanguageCode(String val) {
+    languageCode = val;
+  }
+
+  public String getLanguageCode() {
+    return languageCode;
+  }
+  
   
   // TODO: parameter to choose language, string with language code, if empty, autodetect
   
@@ -230,6 +248,7 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
     com.google.api.services.language.v1beta1.model.Document doc
             = new com.google.api.services.language.v1beta1.model.Document();
     doc.setContent(text);
+    if(getLanguageCode()!=null && !getLanguageCode().isEmpty()) doc.setLanguage(getLanguageCode());
     doc.setType("PLAIN_TEXT"); // alternative would be HTML but we do not use this     
     request.setDocument(doc);
     request.setFeatures(features);
@@ -265,6 +284,11 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
                 getAnnotateSyntax(), getAnnotateEntities(), getAnnotateSentiment());
         addOutputAnnotations(document,resp,gate.Utils.start(ann),gate.Utils.end(ann));
       }
+    } else {
+      String text = document.getContent().toString();
+      AnnotateTextResponse resp = annotateText(serviceApi,text,
+                getAnnotateSyntax(), getAnnotateEntities(), getAnnotateSentiment());
+      addOutputAnnotations(document,resp,0,text.length());
     }
     return document;
   }
@@ -295,14 +319,16 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
         }
       }
     } // if entities 
-    // TODO: if we did not specify a language, annotate the language of the text!!
+    if(getLanguageCode()==null||getLanguageCode().isEmpty()) {
+      gate.Utils.addAnn(outset, from, to, "Language", gate.Utils.featureMap("lang",resp.getLanguage()));
+    }
     List<Sentence> sentences = resp.getSentences();
     if(sentences != null && !sentences.isEmpty()) {
       for(Sentence sentence : sentences) {
         TextSpan span = sentence.getText(); 
         int start = span.getBeginOffset();
         int end = span.getContent().length()+start;
-        // TODO: annotate GoogleSentences
+        gate.Utils.addAnn(outset, from+start, from+end, "Sentence", gate.Utils.featureMap());
       }
     } // if sentences
     List<Token> tokens = resp.getTokens();
@@ -314,15 +340,31 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
       // annotations in a parallel list, then going through this list another time and 
       // creating the edge annotations using the parallel list to get the annotation ids. 
       // TODO: split into two iterations and actually create the annotations.
+      List<Annotation> tokenAnns = new ArrayList<Annotation>(tokens.size());
       for(Token token : tokens) {
         TextSpan span = token.getText();
         int start = span.getBeginOffset();
         int end = span.getContent().length()+start;
         String lemma = token.getLemma();
         String pos = token.getPartOfSpeech().getTag();
-        DependencyEdge edge = token.getDependencyEdge();
+        FeatureMap fm = Factory.newFeatureMap();
+        fm.put("category",pos);
+        fm.put("root",lemma);
+        int id = gate.Utils.addAnn(outset, from+start, from+end, "Token", fm);
+        tokenAnns.add(outset.get(id));
+      } 
+      // Go over the annotations again and add the dependecy parse information
+      int i = 0;
+      for(Annotation ann : tokenAnns) {
+        DependencyEdge edge = tokens.get(i).getDependencyEdge();
         int headTokenIndex = edge.getHeadTokenIndex();
         String label = edge.getLabel();
+        Annotation headTokenAnn = tokenAnns.get(headTokenIndex);
+        int headTokenAnnId = headTokenAnn.getId();
+        FeatureMap fm = ann.getFeatures();
+        fm.put("headId",headTokenAnnId);
+        fm.put("depLabel",label);
+        i++;
       }
     } // if tokens
   }
