@@ -20,6 +20,8 @@ ant || exit
 ant clean.classes || exit
 rm -rf build.properties
 rm -rf makedist.sh
+## Make sure we remove the integration tests directory
+rm -rf tests
 rm $curdir/${name}-${version}-src.zip
 cd ..
 zip -r $curdir/$name-$version.zip $name
