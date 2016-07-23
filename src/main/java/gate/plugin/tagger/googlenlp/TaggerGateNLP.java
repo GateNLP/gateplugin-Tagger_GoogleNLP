@@ -298,7 +298,7 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
     AnnotationSet outset = document.getAnnotations(getOutputAnnotationSet());
     Sentiment sentiment = resp.getDocumentSentiment();
     if(sentiment != null) {
-      FeatureMap fm = gate.Utils.featureMap("magnitute",sentiment.getMagnitude(),"polarity",sentiment.getPolarity());
+      FeatureMap fm = gate.Utils.featureMap("magnitude",sentiment.getMagnitude(),"polarity",sentiment.getPolarity());
       gate.Utils.addAnn(outset, from, to, "Sentiment", fm);
     }
     List<Entity> entities = resp.getEntities();
