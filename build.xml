@@ -23,7 +23,8 @@
 
   <property name="gate.lib" location="${gate.home}/lib" />
   <property name="gate.jar" location="${gate.home}/bin/gate.jar" />
-  <property name="src.dir" location="src/java" />
+  <property name="src.dir" location="src/main/java" />
+  <property name="srctests.dir" location="src/test/java" />
   <property name="classes.dir" location="classes" />
   <property name="doc.dir" location="doc" />
   <property name="build.dir" location="build" />
@@ -65,14 +66,6 @@
   <path id="compile.classpath">
     <path refid="gate.classpath" />
     <path refid="ivylibs" />
-    <!--
-    <fileset dir="lib"> 
-      <include name="*.jar"/>
-    </fileset>
-    -->
-    <fileset dir="lib-static">
-      <include name="*.jar"/>
-    </fileset>
   </path>
  
   <path id="run.classpath">
