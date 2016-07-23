@@ -205,7 +205,7 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
     if (cred.getServiceAccountPrivateKeyId() == null) {
       throw new GateRuntimeException("Could not establish credentials");
     }
-    System.err.println("DEBUG: credentials created: " + cred);
+    //System.err.println("DEBUG: credentials created: " + cred);
     return cred;
   }
 
@@ -231,7 +231,7 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
     } catch (Exception ex) {
       throw new GateRuntimeException("Could not establish Google Service API", ex);
     }
-    System.err.println("DEBUG: API instance established: " + api);
+    //System.err.println("DEBUG: API instance established: " + api);
     return api;
   }
 
@@ -259,11 +259,11 @@ public class TaggerGateNLP extends AbstractDocumentProcessor {
     } catch (IOException ex) {
       throw new GateRuntimeException("Could not create AnnotateText instance", ex);
     }
-    System.err.println("DEBUG: Got an AnnotateText instance: " + at);
+    //System.err.println("DEBUG: Got an AnnotateText instance: " + at);
     AnnotateTextResponse response = null;
     try {
       response = at.execute();
-      System.err.println("DEBUG: Got a response: " + response);
+      //System.err.println("DEBUG: Got a response: " + response);
     } catch (IOException ex) {
       throw new GateRuntimeException("Could not retrieve the annotate text response from the service", ex);
     }
