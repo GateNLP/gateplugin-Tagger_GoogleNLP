@@ -1,7 +1,7 @@
 <!-- creole.xml for Tagger_GoogleNLP -->
 <CREOLE-DIRECTORY
   ID="gate.TaggerGoogleNLP"
-  VERSION="1.0"
+  VERSION="1.1"
   DESCRIPTION="Tagger GoogleNLP"
   HELPURL="https://github.com/GateNLP/gateplugin-Tagger_GoogleNLP/wiki"
 >
