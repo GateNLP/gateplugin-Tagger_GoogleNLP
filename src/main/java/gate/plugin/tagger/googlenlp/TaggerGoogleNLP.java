@@ -53,7 +53,7 @@ import java.util.List;
         // icon="taggerIcon.gif",
         helpURL = "https://github.com/GateNLP/gateplugin-Tagger_GoogleNLP/wiki/Tagger_GoogleNLP"
 )
-public class TaggerGateNLP extends AbstractDocumentProcessor {
+public class TaggerGoogleNLP extends AbstractDocumentProcessor {
 
   // PR PARAMETERS
   protected String containingAnnotationType = "";
